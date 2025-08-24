@@ -1,0 +1,19 @@
+
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-sec-analyzer"
+version = "0.1.0"
+description = "Local LLM-driven C/C++ vulnerability analyzer (offline-friendly)"
+requires-python = ">=3.9"
+authors = [{name="Student Implementer", email="student@example.com"}]
+dependencies = [
+    "typer>=0.12.3",
+    "rich>=13.7.1",
+    "requests>=2.32.3",
+]
+
+[project.scripts]
+analyzer = "analyzer.cli:app"
