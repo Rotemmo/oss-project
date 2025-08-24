@@ -1,2 +1,2 @@
 [console_scripts]
-analyzer = analyzer.cli:app
+llm-analyzer = analyzer.cli:main
