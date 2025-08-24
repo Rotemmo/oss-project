@@ -1,1 +1,1 @@
-analyzer
+sec_analyzer

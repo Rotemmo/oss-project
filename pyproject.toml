@@ -16,7 +16,7 @@ dependencies = [
 
 [project.scripts]
 
-analyzer = "analyzer.cli:main"
+llm-analyzer = "sec_analyzer.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
