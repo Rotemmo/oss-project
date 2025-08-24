@@ -1,6 +1,8 @@
 README.md
 pyproject.toml
+src/analyzer/__init__.py
 src/analyzer/cli.py
+src/analyzer/llm.py
 src/analyzer/parser.py
 src/analyzer/rules.py
 src/llm_sec_analyzer.egg-info/PKG-INFO

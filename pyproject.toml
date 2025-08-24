@@ -15,8 +15,8 @@ dependencies = [
 ]
 
 [project.scripts]
-# אני מציע שם ייחודי כדי שלא יתנגש עם סקריפט 'analyzer' ממקום אחר:
-llm-analyzer = "analyzer.cli:main"
+
+analyzer = "analyzer.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
