@@ -1,27 +1,34 @@
-# src/analyzer/cli.py
-import typer
+# src/sec_analyzer/cli.py
+import typer, pathlib
 from typing import Optional, List, Dict
+from rich import print as rprint
 
 from .parser import read_file
 from .rules import scan_lines
-from .llm import analyze_code_with_llm, DEFAULT_MODEL
 from .report import to_text, to_json, to_sarif
 from .fixes import suggest_replacement
 
-def main(
+DEFAULT_MODEL = "phi4"  # ישתנה ל-llm.DEFAULT_MODEL אם תפעילי LLM
+
+def _cli(
     file: str = typer.Argument(..., help="Path to C/C++ file to analyze"),
-    output_format: str = typer.Option("text", "--format", "-f", case_sensitive=False, help="text|json|sarif"),
-    model: Optional[str] = typer.Option(None, "--model", "-m", help="LLM model name (default env LLM_MODEL or 'phi4')"),
+    output_format: str = typer.Option("text", "--format", case_sensitive=False, help="text|json|sarif"),
+    model: Optional[str] = typer.Option(None, "--model", "-m", help="LLM model name (when LLM enabled)"),
     apply: bool = typer.Option(False, "--apply", help="Apply trivial single-line fixes in-place when safe"),
     no_llm: bool = typer.Option(False, "--no-llm", help="Disable LLM usage (heuristics only)"),
-    encoding: Optional[str] = typer.Option(None, "--encoding", help="Force file encoding (e.g. utf-8, cp1255, utf-16-le)"),
+    encoding: Optional[str] = typer.Option(None, "--encoding", help="Source file encoding (e.g., cp1255, utf-8)"),
 ):
     code, path = read_file(file, encoding=encoding)
 
     heuristics = scan_lines(path)
     llm_findings: List[Dict] = []
     if not no_llm:
-        llm_findings = analyze_code_with_llm(code=code, model=model or DEFAULT_MODEL)
+        try:
+            from .llm import analyze_code_with_llm as _llm_analyze, DEFAULT_MODEL as _DM
+            model = model or _DM
+            llm_findings = _llm_analyze(code=code, model=model)
+        except Exception:
+            llm_findings = []
 
     all_findings: List[Dict] = []
     for f in heuristics:
@@ -49,8 +56,7 @@ def main(
                     lines[idx] = rep + ("" if lines[idx].endswith("\n") else "\n")
                     changed = True
         if changed:
-            path.write_text("".join(lines), encoding="utf-8")
-            from rich import print as rprint
+            path.write_text("".join(lines), encoding=encoding or "utf-8")
             rprint(f"[green]Applied trivial fixes to {path}[/green]")
 
     if output_format.lower() == "json":
@@ -60,8 +66,6 @@ def main(
     else:
         print(to_text(all_findings))
 
-if __name__ == "__main__":
-    typer.run(main)
-def app():
-    import typer
-    typer.run(main)
+def main():
+    # זה ה־entry point שמפורסם בסקריפט – הוא מריץ את ה־CLI האמיתי דרך Typer
+    typer.run(_cli)
