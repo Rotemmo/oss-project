@@ -80,3 +80,4 @@ def scan_lines(path: pathlib.Path) -> List[Finding]:
                     code_line=raw.rstrip(), fix_suggestion=f"Set '{var}=NULL' immediately after free and avoid further use; redesign ownership."
                 ))
     return findings
+
