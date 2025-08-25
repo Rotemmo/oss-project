@@ -8,8 +8,6 @@ from .rules import scan_lines
 from .report import to_text, to_json, to_sarif
 from .fixes import suggest_replacement
 
-DEFAULT_MODEL = "phi4"  # ישתנה ל-llm.DEFAULT_MODEL אם תפעילי LLM
-
 def _cli(
     file: str = typer.Argument(..., help="Path to C/C++ file to analyze"),
     output_format: str = typer.Option("text", "--format", case_sensitive=False, help="text|json|sarif"),
@@ -67,5 +65,4 @@ def _cli(
         print(to_text(all_findings))
 
 def main():
-    # זה ה־entry point שמפורסם בסקריפט – הוא מריץ את ה־CLI האמיתי דרך Typer
     typer.run(_cli)

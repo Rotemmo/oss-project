@@ -32,7 +32,7 @@ Return ONLY a JSON object with this schema (no prose/markdown/fences):
 """
 
 
-MAX_CHARS = int(os.getenv("LLM_MAX_CHARS", "20000")) 
+MAX_CHARS = int(os.getenv("LLM_MAX_CHARS", "5000")) 
 
 def _chunk_text(text: str, max_chars: int = MAX_CHARS) -> str:
     if len(text) <= max_chars:
@@ -77,7 +77,7 @@ def _try_parse_findings(txt: str) -> Optional[List[Dict]]:
     return None
 
 def _fallback_raw(txt: str, source: str) -> List[Dict]:
-    """Finding יחיד עם הטקסט הגולמי — כדי לראות שה-LLM רץ."""
+    """Return a single 'raw output' finding so we can see the LLM ran even if JSON parsing failed."""
     return [{
         "line": 1,
         "rule_id": "LLM_FINDING",
